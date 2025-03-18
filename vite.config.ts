@@ -14,6 +14,9 @@ export default defineConfig({
         manualChunks: {
           'mapbox-gl': ['mapbox-gl'],
         },
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       },
     },
   },
