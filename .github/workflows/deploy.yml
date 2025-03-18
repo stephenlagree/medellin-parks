@@ -36,7 +36,9 @@ jobs:
       - name: Build
         env:
           VITE_MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
-        run: npm run build
+        run: |
+          npm run build
+          ls -la dist
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
