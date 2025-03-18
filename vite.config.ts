@@ -4,15 +4,12 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/medellin-parks/',
+  base: 'https://stephenlagree.github.io/medellin-parks/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: true,
     rollupOptions: {
-      input: {
-        main: 'https://stephenlagree.github.io/medellin-parks/index.html',
-      },
       output: {
         manualChunks: {
           'mapbox-gl': ['mapbox-gl'],
