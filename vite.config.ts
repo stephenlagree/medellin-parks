@@ -14,7 +14,7 @@ export default defineConfig({
         manualChunks: {
           'mapbox-gl': ['mapbox-gl'],
         },
-        entryFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/index.js',
         chunkFileNames: 'assets/[name].[hash].js',
         assetFileNames: ({ name }) => {
           if (name === 'vite.svg') {
