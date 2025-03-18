@@ -34,6 +34,8 @@ jobs:
         run: npm ci
       
       - name: Build
+        env:
+          VITE_MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
         run: npm run build
       
       - name: Setup Pages
