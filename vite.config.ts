@@ -10,18 +10,16 @@ export default defineConfig({
     assetsDir: 'assets',
     sourcemap: true,
     rollupOptions: {
+      input: {
+        main: 'https://stephenlagree.github.io/medellin-parks/index.html',
+      },
       output: {
         manualChunks: {
           'mapbox-gl': ['mapbox-gl'],
         },
-        entryFileNames: 'assets/index.js',
+        entryFileNames: 'assets/[name].[hash].js',
         chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: ({ name }) => {
-          if (name === 'vite.svg') {
-            return '[name].[ext]';
-          }
-          return 'assets/[name].[hash].[ext]';
-        }
+        assetFileNames: 'assets/[name].[hash].[ext]'
       },
     },
   },
