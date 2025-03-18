@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/medellin-parks/',
   root: '.',
+  publicDir: 'public',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
