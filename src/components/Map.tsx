@@ -35,21 +35,43 @@ const Sidebar = styled.div`
   }
 `;
 
-const ParkItem = styled.div`
+const ParkItem = styled.div<{ isSelected?: boolean }>`
   cursor: pointer;
   padding: 10px;
   margin-bottom: 8px;
   border-radius: 4px;
-  background-color: #f0f0f0;
+  background-color: ${props => props.isSelected ? '#e0e0e0' : '#f0f0f0'};
+  border: ${props => props.isSelected ? '2px solid #4CAF50' : 'none'};
   &:hover {
     background-color: #e0e0e0;
   }
+`;
+
+const ParkInfo = styled.div`
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  border-left: 3px solid #4CAF50;
+`;
+
+const AttractionList = styled.div`
+  margin-top: 8px;
+`;
+
+const AttractionItem = styled.div`
+  padding: 4px 8px;
+  margin-top: 4px;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  font-size: 0.9em;
 `;
 
 export const Map = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [selectedPark, setSelectedPark] = useState<Park | null>(null);
+  const markersRef = useRef<{ [key: string]: mapboxgl.Marker }>({});
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -71,6 +93,10 @@ export const Map = () => {
   useEffect(() => {
     if (!map.current) return;
 
+    // Clear existing markers
+    Object.values(markersRef.current).forEach(marker => marker.remove());
+    markersRef.current = {};
+
     // Add markers for parks
     parks.forEach(park => {
       const marker = new mapboxgl.Marker({ color: '#4CAF50' })
@@ -80,6 +106,8 @@ export const Map = () => {
           <p>${park.description}</p>
         `))
         .addTo(map.current!);
+
+      markersRef.current[park.id] = marker;
 
       // Add markers for attractions
       park.attractions.forEach(attraction => {
@@ -91,6 +119,8 @@ export const Map = () => {
             <p>Type: ${attraction.type}</p>
           `))
           .addTo(map.current!);
+
+        markersRef.current[`${park.id}-${attraction.name}`] = attractionMarker;
       });
     });
   }, []);
@@ -102,6 +132,15 @@ export const Map = () => {
       zoom: 15,
       essential: true
     });
+
+    // Highlight the selected marker
+    Object.values(markersRef.current).forEach(marker => {
+      marker.getElement().style.opacity = '0.5';
+    });
+    markersRef.current[park.id].getElement().style.opacity = '1';
+    park.attractions.forEach(attraction => {
+      markersRef.current[`${park.id}-${attraction.name}`].getElement().style.opacity = '1';
+    });
   };
 
   return (
@@ -109,9 +148,26 @@ export const Map = () => {
       <Sidebar>
         <h2>Medellín Parks</h2>
         {parks.map(park => (
-          <ParkItem key={park.id} onClick={() => handleParkClick(park)}>
+          <ParkItem 
+            key={park.id} 
+            onClick={() => handleParkClick(park)}
+            isSelected={selectedPark?.id === park.id}
+          >
             <h3>{park.name}</h3>
             <p>{park.description}</p>
+            {selectedPark?.id === park.id && (
+              <ParkInfo>
+                <h4>Nearby Attractions:</h4>
+                <AttractionList>
+                  {park.attractions.map(attraction => (
+                    <AttractionItem key={attraction.name}>
+                      <strong>{attraction.name}</strong> - {attraction.type}
+                      <p>{attraction.description}</p>
+                    </AttractionItem>
+                  ))}
+                </AttractionList>
+              </ParkInfo>
+            )}
           </ParkItem>
         ))}
       </Sidebar>
